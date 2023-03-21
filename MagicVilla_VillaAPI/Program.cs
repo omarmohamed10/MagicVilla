@@ -1,4 +1,5 @@
-using MagicVilla_VillaAPI.Logging;
+using MagicVilla_VillaAPI.Data;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +14,12 @@ builder.Services.AddControllers().AddNewtonsoftJson();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<ILogging , Logging>();
+builder.Services.AddDbContext<ApplicationDbContext>(option =>
+{
+    option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSqlConnection"));
+
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
