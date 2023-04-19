@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Net;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace MagicVilla_VillaAPI.Controllers;
 
@@ -112,6 +113,12 @@ namespace MagicVilla_VillaAPI.Controllers;
                     return BadRequest(createDTO);
                 }
 
+                if(await _dbVilla.GetAsync(u => u.Id == createDTO.VillaID,false) == null)
+                {
+                ModelState.AddModelError("ErrorMessages", "Villa id Not Exist!");
+                return BadRequest(ModelState);
+                }
+            
                 VillaNumber villaNumber = _mapper.Map<VillaNumber>(createDTO);
 
 
@@ -179,7 +186,12 @@ namespace MagicVilla_VillaAPI.Controllers;
                     ModelState.AddModelError("ErrorMessages", "Villa ID is Invalid!");
                     return BadRequest(ModelState);
                 }
-                VillaNumber model = _mapper.Map<VillaNumber>(updateDTO);
+            if (await _dbVilla.GetAsync(u => u.Id == updateDTO.VillaID, false) == null)
+            {
+                ModelState.AddModelError("ErrorMessages", "Villa id Not Exist!");
+                return BadRequest(ModelState);
+            }
+            VillaNumber model = _mapper.Map<VillaNumber>(updateDTO);
 
                 await _dbVillaNumber.UpdateAsync(model);
                 _response.StatusCode = HttpStatusCode.NoContent;
