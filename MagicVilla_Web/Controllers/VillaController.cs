@@ -17,7 +17,26 @@ namespace MagicVilla_Web.Controllers
             _villaService = villaService;
             _mapper = mapper;
         }
-        public async Task <IActionResult> IndexVilla()
+        public async Task <IActionResult> CreateVilla()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateVilla(VillaCreateDTO villaCreateDTO)
+        {
+            if(ModelState.IsValid)
+            {
+              
+                var response = await _villaService.CreateAsync<APIResponse>(villaCreateDTO);
+                if (response != null & response.IsSuccess)
+                {
+                    return RedirectToAction(nameof(IndexVilla));
+                }
+            }
+            return View(villaCreateDTO);
+        }
+        public async Task<IActionResult> IndexVilla()
         {
             List<VillaDTO> villaDTOs = new List<VillaDTO>();
             var response = await _villaService.GetAllAsync<APIResponse>();
