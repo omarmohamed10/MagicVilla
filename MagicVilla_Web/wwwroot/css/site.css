@@ -16,6 +16,9 @@ html {
   position: relative;
   min-height: 100%;
 }
+* {
+    font-family: 'Josefin Sans', sans-serif !important;
+}
 
 body {
   margin-bottom: 60px;

@@ -54,9 +54,9 @@ namespace MagicVilla_VillaAPI.Controllers
 
           
         }
-        //[HttpGet("id")]
-       [HttpGet]
-       [Route("GetVilla" , Name = "GetVilla")]
+    // [HttpGet("{id}")]
+        [HttpGet]
+       [Route("GetVilla/{id:int}" , Name = "GetVilla")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -101,7 +101,7 @@ namespace MagicVilla_VillaAPI.Controllers
                 if (!ModelState.IsValid) return BadRequest(ModelState);
                 if (await _dbVilla.GetAsync(u => u.Name == villaDTO.Name) != null)
                 {
-                    ModelState.AddModelError("CustomError", "Villa is already Exist!");
+                    ModelState.AddModelError("ErrorMessages", "Villa is already Exist!");
                     return BadRequest(ModelState);
                 }
                 if (villaDTO == null) return BadRequest();
@@ -125,7 +125,7 @@ namespace MagicVilla_VillaAPI.Controllers
 
         }
         [HttpDelete]
-        [Route("DeleteVilla" , Name = "DeleteVilla")]
+        [Route("DeleteVilla/{id:int}", Name = "DeleteVilla")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -151,7 +151,7 @@ namespace MagicVilla_VillaAPI.Controllers
             return _response;
         }
         [HttpPut]
-        [Route("UpdateVilla" , Name = "UpdateVilla")]
+        [Route("UpdateVilla/{id:int}", Name = "UpdateVilla")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<APIResponse>> UpdateVilla(int id , [FromBody] VillaUpdateDTO villaDTO)
@@ -174,7 +174,7 @@ namespace MagicVilla_VillaAPI.Controllers
             return _response;
         }
         [HttpPatch]
-        [Route("UpdatePartialVilla", Name = "UpdatePartialVilla")]
+        [Route("UpdatePartialVilla/{id:int}", Name = "UpdatePartialVilla")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdatePartialVilla(int id , JsonPatchDocument<VillaUpdateDTO> PatchVilla)
