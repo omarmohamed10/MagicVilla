@@ -36,7 +36,7 @@ namespace MagicVilla_VillaAPI.Controllers;
             try
             {
 
-                IEnumerable<VillaNumber> villaNumberList = await _dbVillaNumber.GetAllAsync();
+                IEnumerable<VillaNumber> villaNumberList = await _dbVillaNumber.GetAllAsync(includeProperties:"villa");
                 _response.Result = _mapper.Map<List<VillaNumberDTO>>(villaNumberList);
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.IsSuccess = true;
@@ -55,7 +55,7 @@ namespace MagicVilla_VillaAPI.Controllers;
 
 
         [HttpGet]
-        [Route("GetVillaNumber" , Name = "GetVillaNumber")]
+        [Route("GetVillaNumber/{id:int}", Name = "GetVillaNumber")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -140,7 +140,7 @@ namespace MagicVilla_VillaAPI.Controllers;
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Route("DeleteVillaNumber", Name = "DeleteVillaNumber")] 
+        [Route("DeleteVillaNumber/{id:int}", Name = "DeleteVillaNumber")] 
         [HttpDelete]
         public async Task<ActionResult<APIResponse>> DeleteVillaNumber(int id)
         {
@@ -170,7 +170,7 @@ namespace MagicVilla_VillaAPI.Controllers;
         }
 
         [HttpPut]
-        [Route("UpdateVillaNumber", Name = "UpdateVillaNumber")]
+        [Route("UpdateVillaNumber/{id:int}", Name = "UpdateVillaNumber")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<APIResponse>> UpdateVillaNumber(int id, [FromBody] VillaNumberUpdateDTO updateDTO)
