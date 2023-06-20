@@ -10,11 +10,13 @@ namespace MagicVilla_VillaAPI.Repository
     {
         private readonly ApplicationDbContext _db;
         internal DbSet<T> dbSet;
-        public Repository(ApplicationDbContext db)
+        private readonly ILogger _logger;
+        public Repository(ApplicationDbContext db, ILogger<Repository<T>> logger)
         {
             _db = db;
-         //   _db.VillaNumbers.Include(u => u.villa).ToList();
+            //   _db.VillaNumbers.Include(u => u.villa).ToList();
             this.dbSet = _db.Set<T>();
+            _logger = logger;   
         }
         public async Task CreateAsync(T entity)
         {
@@ -57,6 +59,7 @@ namespace MagicVilla_VillaAPI.Repository
 					query = query.Include(property);
 				}
 			}
+            _logger.LogDebug("(Repository class) Getting all Villas");
 			return await query.ToListAsync();
         }
 

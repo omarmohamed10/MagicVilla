@@ -9,9 +9,11 @@ namespace MagicVilla_VillaAPI.Repository
     public class VillaRepository : Repository<Villa>, IVillaRepository
     {
         private readonly ApplicationDbContext _db;
-        public VillaRepository(ApplicationDbContext db):base(db) 
+        private readonly ILogger _logger;
+        public VillaRepository(ApplicationDbContext db, ILogger<VillaRepository> logger):base(db,logger) 
         {
             _db = db;
+            _logger = logger;
         }
         public async Task<Villa> UpdateAsync(Villa entity)
         {

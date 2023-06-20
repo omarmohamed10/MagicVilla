@@ -6,6 +6,8 @@ using MagicVilla_VillaAPI.Repository.IRepository;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 using System.Net;
 
 namespace MagicVilla_VillaAPI.Controllers
@@ -24,11 +26,13 @@ namespace MagicVilla_VillaAPI.Controllers
         private readonly IVillaRepository _dbVilla;
         private readonly IMapper _mapper;
         protected APIResponse _response;
-        public VillaAPIController(IVillaRepository db , IMapper mapper)
+        private readonly ILogger<VillaAPIController> _logger;
+        public VillaAPIController(IVillaRepository db , IMapper mapper , ILogger<VillaAPIController> logger)
         {  
             _dbVilla = db;
             _mapper = mapper;
             this._response = new APIResponse();
+            _logger = logger;
         }
 
         [HttpGet]
@@ -42,13 +46,14 @@ namespace MagicVilla_VillaAPI.Controllers
                 _response.IsSuccess = true;
                 _response.Result = _mapper.Map<List<VillaDTO>>(villas);
                 _response.StatusCode = HttpStatusCode.OK;
-
+                _logger.LogDebug("(Controller) Getting All Villas");
                 return Ok(_response);
             }
             catch (Exception ex)
             {
                 _response.IsSuccess = false;
                 _response.ErrorMessages = new List<string>() { ex.ToString()};
+
             }
             return _response;
 
@@ -64,13 +69,20 @@ namespace MagicVilla_VillaAPI.Controllers
         {
             try
             {
+                var timer = new Stopwatch();
+                timer.Start();
                 if (id == 0)
                 {
+                 //   var ex =  new BadHttpRequestException("Error when getting Villa with id (0)");
+                 //   throw ex;
+                    
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response);
+
                 }
 
                 var villa = await _dbVilla.GetAsync(x => x.Id == id, true);
+                timer.Stop();
                 if (villa == null)
                 {
                     _response.StatusCode = HttpStatusCode.NotFound;
@@ -79,10 +91,15 @@ namespace MagicVilla_VillaAPI.Controllers
                 _response.Result = _mapper.Map<VillaDTO>(villa);
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.IsSuccess = true;
+                _logger.LogInformation("(Controller) Getting Villa with id {id}", id);
+                _logger.LogInformation("(Controller) Querying Get Villa finished in {milliseconds} milliseconds", timer.ElapsedMilliseconds);
+
                 return Ok(_response);
             }
             catch (Exception ex)
             {
+              //  throw ex;
+                _logger.LogWarning("Error when Getting Villa with id {id}",id);
                 _response.IsSuccess = false;
                 _response.ErrorMessages = new List<string>() { ex.ToString() };
             }
