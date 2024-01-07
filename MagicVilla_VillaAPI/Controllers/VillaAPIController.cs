@@ -39,6 +39,7 @@ namespace MagicVilla_VillaAPI.Controllers
         [HttpGet]
         [Route("GetVillas")]
         [Authorize]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetVillas()
         {
