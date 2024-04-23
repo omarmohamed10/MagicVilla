@@ -22,7 +22,7 @@ namespace MagicVilla_Web.Controllers
 		{
 
 			    List<VillaDTO> villaList = new List<VillaDTO>();
-				var response = await _villaService.GetAllAsync<APIResponse>();
+				var response = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString("JWTToken"));
 				if (response != null & response.IsSuccess)
 				{
 					villaList = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result));
