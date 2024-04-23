@@ -2,6 +2,7 @@
 using MagicVilla_Web.Services.ISerivces;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -44,6 +45,12 @@ namespace MagicVilla_Web.Services
 
                 }
                 HttpResponseMessage apiResonse = null;
+
+                if (!string.IsNullOrEmpty(apiRequest.Token))
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",apiRequest.Token);
+                }
+
                 apiResonse = await client.SendAsync(message);
                 var apiContent = await apiResonse.Content.ReadAsStringAsync();
                 try
